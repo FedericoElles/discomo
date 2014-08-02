@@ -9,8 +9,8 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "express": "~4.7.2",
-    "logfmt": "~1.1.2",
-	"folder_hartz-4-namen-generator": "git://github.com/FedericoElles/h4ng.git"
+  "express": "~4.7.2",
+  "logfmt": "~1.1.2",
+	"folder_hartz-4-namen-generator": "git://github.com/FedericoElles/h4ng.git#v0.*"
   }
 }
