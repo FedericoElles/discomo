@@ -7,9 +7,37 @@ var app = express();
 
 app.use(logfmt.requestLogger());
 
-app.get('/', function(req, res) {
-  res.send('Hello World!');
+//dynamically register all submoduls
+var htmlFolderList = ''
+    analyticsCode = '';
+
+
+fs.readFile(path.join(process.cwd(),'inc','analytics.txt'),function(err, data){
+    if (err) throw err;
+	analyticsCode = data;
+  });
+
+//TODO: inject funny stuff
+app.use(function(req, res, next) {
+  console.log('type',req.url);
+  //res.body = replace(res.body,'<!---->','');
+  next();
 });
+
+app.get('/', function(req, res) {
+  //res.setHeader("Content-Type", "text/html");
+  res.type('html');
+  fs.readFile(path.join(process.cwd(),'index.html'),function(err, data){
+    if (err) throw err;
+	data = data.toString().replace('<!--apps-->', htmlFolderList);
+	res.send(data);
+  });
+});
+
+//static
+app.use('/static', express.static(path.join(process.cwd(),'static')));
+
+app.use('/robots.txt', express.static(path.join(process.cwd(),'robots.txt')));
 
 
 var parseFolderName = function(folderName){
@@ -28,8 +56,7 @@ var parseFolderName = function(folderName){
   return r;
 };
 
-//dynamically register all submoduls
-var htmlFolderList = '';
+
 fs.readdir(path.join(process.cwd(),'node_modules'), function (err, files) { // '/' denotes the root folder
   var action; //stores what to do with the folder
   if (err) throw err;
@@ -39,7 +66,7 @@ fs.readdir(path.join(process.cwd(),'node_modules'), function (err, files) { // '
 	   action = parseFolderName(file);
 	 
        if (!err && stats.isDirectory() && action.valid) { //conditing for identifying folders
-         htmlFolderList += '<li class="folder"><a href="/'+action.name+'">'+action.name+'</a></li>';
+         htmlFolderList += '<li><a href="/'+action.name+'">'+action.name+'</a></li>';
 		 
 		 //register folder in app
 		 if (action.type === 'folder'){
