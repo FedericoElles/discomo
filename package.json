@@ -12,6 +12,6 @@
   "express": "~4.7.2",
   "logfmt": "~1.1.2",
 	"folder_hartz-4-namen-generator": "git://github.com/FedericoElles/h4ng.git#v0.1",
-  "folder_paperhabits": "git://github.com/FedericoElles/paperhabits.git#v0.0.1"
+  "folder_paperhabits": "git://github.com/FedericoElles/paperhabits.git#v0.0.2"
   }
 }
