@@ -5,6 +5,7 @@ var fs = require('fs');
 var path = require('path');
 var app = express();
 
+
 app.use(logfmt.requestLogger());
 
 //dynamically register all submoduls
@@ -42,12 +43,19 @@ app.use('/robots.txt', express.static(path.join(process.cwd(),'robots.txt')));
 
 var parseFolderName = function(folderName){
   var r = {
-	valid:false,	
+	valid:false,
+	private:false,
 	name:'',
 	type:''
   };
+  if (folderName.substr(0,1) === '_'){
+    r.private = true;
+    folderName = folderName.substr(1);
+  }
   var nameParts = folderName.split('_');
-  if ((nameParts[0] === 'folder' || nameParts[0] === 'subdomain') &&
+  if ((nameParts[0] === 'folder' || 
+       nameParts[0] === 'subdomain' ||
+       nameParts[0] === 'app') &&
       nameParts.length === 2){
 	r.valid = true;
 	r.type = nameParts[0];
@@ -63,15 +71,24 @@ fs.readdir(path.join(process.cwd(),'node_modules'), function (err, files) { // '
 
    files.forEach( function (file) {
      fs.lstat(path.join(process.cwd(),'node_modules', file), function(err, stats) {
-	   action = parseFolderName(file);
+      action = parseFolderName(file);
+      console.log('action', action);
 	 
        if (!err && stats.isDirectory() && action.valid) { //conditing for identifying folders
-         htmlFolderList += '<li><a href="/'+action.name+'">'+action.name+'</a></li>';
+       
+         if (!action.private){
+          htmlFolderList += '<li><a href="/'+action.name+'">'+action.name+'</a></li>';
+         }
 		 
-		 //register folder in app
-		 if (action.type === 'folder'){
-			app.use('/'+action.name, express.static(path.join(process.cwd(),'node_modules', file)));
-		 }
+		     //register folder in app
+		     if (action.type === 'folder'){
+			    app.use('/'+action.name, express.static(path.join(process.cwd(),'node_modules', file)));
+		     }
+		     
+		     console.log('register', action.type, file);
+		     if (action.type === 'app'){
+		       app.use('/'+action.name, require(file));
+         }
        }
      });
    });
