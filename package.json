@@ -14,7 +14,6 @@
 	"folder_hartz-4-namen-generator": "git://github.com/FedericoElles/h4ng.git#v0.1",
   "folder_paperhabits": "git://github.com/FedericoElles/paperhabits.git#v0.0.2",
   "_app_hn": "git://github.com/FedericoElles/_app_hn.git#v0.0.1",
-  "_app_so": "git://github.com/FedericoElles/_app_so.git#v0.0.1",
   "_app_heise": "git://github.com/FedericoElles/_app_heise.git#v0.0.1"
   }
-}
+} 
